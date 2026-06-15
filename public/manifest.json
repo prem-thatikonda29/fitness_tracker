@@ -1,0 +1,24 @@
+{
+  "name": "Workout Tracker",
+  "short_name": "Workouts",
+  "description": "Log workouts, track body parts, review your week.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f1f4e6",
+  "theme_color": "#f1f4e6",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
