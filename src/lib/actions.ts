@@ -92,6 +92,59 @@ export async function createSession(input: {
   redirect(`/session/${session.id}`);
 }
 
+// Update an existing session: replace its details, exercises, and sets.
+// Safe to call repeatedly — each save fully rewrites the session's contents.
+export async function updateSession(
+  sessionId: number,
+  input: {
+    date: string;
+    name: string | null;
+    exercises: ExerciseInput[];
+  },
+) {
+  const userId = await requireUser();
+
+  // Ensure the session belongs to this user.
+  const [session] = await db
+    .select()
+    .from(sessions)
+    .where(and(eq(sessions.id, sessionId), eq(sessions.userId, userId)));
+  if (!session) return;
+
+  await db
+    .update(sessions)
+    .set({ date: input.date, name: input.name?.trim() || null })
+    .where(eq(sessions.id, sessionId));
+
+  // Wipe existing exercises (cascades to their sets) and re-insert.
+  await db
+    .delete(sessionExercises)
+    .where(eq(sessionExercises.sessionId, sessionId));
+
+  for (const ex of input.exercises) {
+    const [se] = await db
+      .insert(sessionExercises)
+      .values({ sessionId, exerciseId: ex.exerciseId })
+      .returning();
+    const validSets = ex.sets.filter((s) => s.reps != null || s.weight != null);
+    if (validSets.length > 0) {
+      await db.insert(sets).values(
+        validSets.map((s, i) => ({
+          sessionExerciseId: se.id,
+          setNumber: i + 1,
+          reps: s.reps,
+          weight: s.weight,
+        })),
+      );
+    }
+  }
+
+  revalidatePath("/");
+  revalidatePath("/report");
+  revalidatePath(`/session/${sessionId}`);
+  redirect(`/session/${sessionId}`);
+}
+
 export async function deleteSession(sessionId: number) {
   const userId = await requireUser();
   await db

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronLeft, Dumbbell } from "lucide-react";
+import { ChevronLeft, Dumbbell, Pencil } from "lucide-react";
 import { requireUser } from "@/lib/auth";
 import { getSessionDetail } from "@/lib/queries";
 import { format } from "@/lib/dates";
@@ -36,7 +36,17 @@ export default async function SessionPage({
         <Button render={<Link href="/" />} nativeButton={false} variant="ghost" size="sm">
           <ChevronLeft className="size-4" /> Calendar
         </Button>
-        <DeleteSessionButton sessionId={session.id} />
+        <div className="flex items-center gap-1">
+          <Button
+            render={<Link href={`/session/${session.id}/edit`} />}
+            nativeButton={false}
+            variant="ghost"
+            size="sm"
+          >
+            <Pencil className="size-4" /> Edit
+          </Button>
+          <DeleteSessionButton sessionId={session.id} />
+        </div>
       </div>
 
       <header className="space-y-2">

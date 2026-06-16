@@ -4,7 +4,7 @@ import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Trash2, Check, Dumbbell } from "lucide-react";
 import type { BodyPart, Exercise, Routine } from "@/db/schema";
-import { addExercise, addBodyPart, createSession } from "@/lib/actions";
+import { addExercise, addBodyPart, createSession, updateSession } from "@/lib/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -37,6 +37,9 @@ export function LogForm({
   routines,
   initialRoutineId,
   prefillExerciseIds,
+  editSessionId,
+  initialName,
+  initialSelected,
 }: {
   defaultDate: string;
   bodyParts: BodyPart[];
@@ -44,21 +47,29 @@ export function LogForm({
   routines: Routine[];
   initialRoutineId: number | null;
   prefillExerciseIds: number[];
+  editSessionId?: number;
+  initialName?: string;
+  initialSelected?: Selected;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
+  const isEdit = editSessionId != null;
 
   const [date, setDate] = useState(defaultDate);
-  const [name, setName] = useState("");
+  const [name, setName] = useState(initialName ?? "");
   const [selected, setSelected] = useState<Selected>(() => {
+    if (initialSelected) return initialSelected;
     const init: Selected = {};
     for (const id of prefillExerciseIds) init[id] = [{ reps: "", weight: "" }];
     return init;
   });
-  // Multiple body parts can be active at once. Seed from any prefilled exercises.
+  // Multiple body parts can be active at once. Seed from prefilled/edited exercises.
   const [activeBodyParts, setActiveBodyParts] = useState<Set<number>>(() => {
     const ids = new Set<number>();
-    for (const id of prefillExerciseIds) {
+    const seedIds = initialSelected
+      ? Object.keys(initialSelected).map(Number)
+      : prefillExerciseIds;
+    for (const id of seedIds) {
       const ex = exercises.find((e) => e.id === id);
       if (ex) ids.add(ex.bodyPartId);
     }
@@ -123,28 +134,38 @@ export function LogForm({
   }
 
   function save() {
-    const payload = {
-      date,
-      name: name || null,
-      routineId: initialRoutineId,
-      exercises: selectedIds.map((exerciseId) => ({
-        exerciseId,
-        sets: selected[exerciseId].map((s) => ({
-          reps: s.reps === "" ? null : Number(s.reps),
-          weight: s.weight === "" ? null : Number(s.weight),
-        })),
+    const exercisesPayload = selectedIds.map((exerciseId) => ({
+      exerciseId,
+      sets: selected[exerciseId].map((s) => ({
+        reps: s.reps === "" ? null : Number(s.reps),
+        weight: s.weight === "" ? null : Number(s.weight),
       })),
-    };
+    }));
     startTransition(() => {
-      createSession(payload);
+      if (isEdit) {
+        updateSession(editSessionId, {
+          date,
+          name: name || null,
+          exercises: exercisesPayload,
+        });
+      } else {
+        createSession({
+          date,
+          name: name || null,
+          routineId: initialRoutineId,
+          exercises: exercisesPayload,
+        });
+      }
     });
   }
 
   return (
     <div className="space-y-5">
-      <h1 className="text-2xl font-bold tracking-tight">Log workout</h1>
+      <h1 className="text-2xl font-bold tracking-tight">
+        {isEdit ? "Edit workout" : "Log workout"}
+      </h1>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className={cn("grid gap-3", isEdit ? "grid-cols-1" : "grid-cols-2")}>
         <div className="space-y-1.5">
           <Label htmlFor="date">Date</Label>
           <Input
@@ -154,6 +175,7 @@ export function LogForm({
             onChange={(e) => setDate(e.target.value)}
           />
         </div>
+        {!isEdit && (
         <div className="space-y-1.5">
           <Label>Routine</Label>
           <Select
@@ -173,6 +195,7 @@ export function LogForm({
             </SelectContent>
           </Select>
         </div>
+        )}
       </div>
 
       <div className="space-y-1.5">
@@ -330,7 +353,7 @@ export function LogForm({
         onClick={save}
         disabled={pending || selectedIds.length === 0}
       >
-        {pending ? "Saving…" : "Save workout"}
+        {pending ? "Saving…" : isEdit ? "Save changes" : "Save workout"}
       </Button>
     </div>
   );
