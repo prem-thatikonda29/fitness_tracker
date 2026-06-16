@@ -51,15 +51,16 @@ export function RoutineForm({
 
   return (
     <div className="space-y-5">
-      <Button render={<Link href="/routines" />} nativeButton={false} variant="ghost" size="sm">
+      <Button render={<Link href="/routines" />} nativeButton={false} variant="ghost" size="sm" data-testid="back-to-routines">
         <ChevronLeft className="size-4" /> Routines
       </Button>
-      <h1 className="text-2xl font-bold tracking-tight">New routine</h1>
+      <h1 className="text-2xl font-bold tracking-tight" data-testid="new-routine-title">New routine</h1>
 
       <div className="space-y-1.5">
         <Label htmlFor="name">Name</Label>
         <Input
           id="name"
+          data-testid="routine-name-input"
           placeholder="e.g. My Push Day"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -69,21 +70,21 @@ export function RoutineForm({
       <div className="space-y-1.5">
         <Label>Split type</Label>
         <Select value={split} onValueChange={(v) => setSplit(v ?? "custom")}>
-          <SelectTrigger>
+          <SelectTrigger data-testid="routine-split-select">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="custom">Custom</SelectItem>
-            <SelectItem value="ppl">Push / Pull / Legs</SelectItem>
-            <SelectItem value="standard">Standard split</SelectItem>
+            <SelectItem value="custom" data-testid="routine-split-item">Custom</SelectItem>
+            <SelectItem value="ppl" data-testid="routine-split-item">Push / Pull / Legs</SelectItem>
+            <SelectItem value="standard" data-testid="routine-split-item">Standard split</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <div className="space-y-4">
-        <Label>Exercises ({selected.size} selected)</Label>
+        <Label data-testid="exercise-selection-count">Exercises ({selected.size} selected)</Label>
         {grouped.map(({ bp, exercises }) => (
-          <div key={bp.id} className="space-y-2">
+          <div key={bp.id} className="space-y-2" data-testid="routine-exercise-group" data-bodypart={bp.name}>
             <p className="text-sm font-medium text-muted-foreground">{bp.name}</p>
             <div className="flex flex-wrap gap-2">
               {exercises.map((ex) => {
@@ -92,6 +93,8 @@ export function RoutineForm({
                   <button
                     key={ex.id}
                     type="button"
+                    data-testid="routine-exercise-toggle"
+                    data-exercise={ex.name}
                     onClick={() => toggle(ex.id)}
                     className={cn(
                       "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition-colors",
@@ -113,6 +116,7 @@ export function RoutineForm({
       <Button
         className="w-full"
         size="lg"
+        data-testid="save-routine-btn"
         disabled={pending || !name.trim() || selected.size === 0}
         onClick={() =>
           start(() =>

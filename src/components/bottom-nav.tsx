@@ -18,13 +18,15 @@ export function BottomNav() {
     return null;
   }
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-10 mx-auto max-w-md border-t border-border bg-card/95 backdrop-blur">
+    <nav data-testid="bottom-nav" className="fixed inset-x-0 bottom-0 z-10 mx-auto max-w-md border-t border-border bg-card/95 backdrop-blur">
       <div className="grid grid-cols-4">
         {tabs.map(({ href, label, icon: Icon }) => {
           const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
+          const testId = `nav-${label.toLowerCase()}`;
           return (
             <Link
               key={href}
+              data-testid={testId}
               href={href}
               className={cn(
                 "flex flex-col items-center gap-1 py-3 text-xs font-medium transition-colors",

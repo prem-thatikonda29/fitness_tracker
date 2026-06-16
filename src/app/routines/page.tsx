@@ -21,15 +21,15 @@ export default async function RoutinesPage() {
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">Routines</h1>
-        <Button render={<Link href="/routines/new" />} nativeButton={false} size="sm">
+      <div className="flex items-center justify-between" data-testid="routines-header">
+        <h1 className="text-2xl font-bold tracking-tight" data-testid="routines-title">Routines</h1>
+        <Button render={<Link href="/routines/new" />} nativeButton={false} size="sm" data-testid="new-routine-btn">
           <Plus className="size-4" /> New
         </Button>
       </div>
 
       {routines.length === 0 ? (
-        <Card>
+        <Card data-testid="routines-empty">
           <CardContent className="flex flex-col items-center gap-2 py-10 text-center text-muted-foreground">
             <ClipboardList className="size-8" />
             <p>No routines yet. Create one to pre-fill your workouts.</p>
@@ -38,14 +38,14 @@ export default async function RoutinesPage() {
       ) : (
         <div className="space-y-3">
           {routines.map((r) => (
-            <Card key={r.id}>
+            <Card key={r.id} data-testid="routine-card" data-routine={r.name}>
               <CardContent className="flex items-center justify-between gap-3">
                 <div className="space-y-1">
-                  <p className="font-medium">{r.name}</p>
-                  <Badge variant="secondary">{splitLabel[r.split] ?? "Custom"}</Badge>
+                  <p className="font-medium" data-testid="routine-name">{r.name}</p>
+                  <Badge variant="secondary" data-testid="routine-split-badge">{splitLabel[r.split] ?? "Custom"}</Badge>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Button render={<Link href={`/log?routine=${r.id}`} />} nativeButton={false} size="sm" variant="outline">
+                  <Button render={<Link href={`/log?routine=${r.id}`} />} nativeButton={false} size="sm" variant="outline" data-testid="use-routine-btn" data-routine={r.name}>
                     <Play className="size-3.5" /> Use
                   </Button>
                   <DeleteRoutineButton routineId={r.id} />

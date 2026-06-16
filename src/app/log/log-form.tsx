@@ -170,6 +170,7 @@ export function LogForm({
           <Label htmlFor="date">Date</Label>
           <Input
             id="date"
+            data-testid="session-date"
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
@@ -182,13 +183,13 @@ export function LogForm({
             value={initialRoutineId ? String(initialRoutineId) : "none"}
             onValueChange={onRoutineChange}
           >
-            <SelectTrigger>
+            <SelectTrigger data-testid="routine-select-trigger">
               <SelectValue placeholder="Blank" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="none">Blank</SelectItem>
               {routines.map((r) => (
-                <SelectItem key={r.id} value={String(r.id)}>
+                <SelectItem key={r.id} value={String(r.id)} data-testid="routine-select-item">
                   {r.name}
                 </SelectItem>
               ))}
@@ -202,6 +203,7 @@ export function LogForm({
         <Label htmlFor="name">Name (optional)</Label>
         <Input
           id="name"
+          data-testid="session-name"
           placeholder="e.g. Morning push"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -221,6 +223,8 @@ export function LogForm({
               <button
                 key={bp.id}
                 type="button"
+                data-testid="bodypart-toggle"
+                data-bodypart={bp.name}
                 onClick={() => toggleBodyPart(bp.id)}
                 className={cn(
                   "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
@@ -257,6 +261,8 @@ export function LogForm({
                   <button
                     key={ex.id}
                     type="button"
+                    data-testid="exercise-toggle"
+                    data-exercise={ex.name}
                     onClick={() => toggleExercise(ex.id)}
                     className={cn(
                       "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition-colors",
@@ -278,13 +284,15 @@ export function LogForm({
       {selectedIds.length > 0 && (
         <div className="space-y-3">
           <Label>Your session</Label>
-          {selectedIds.map((exId) => (
-            <Card key={exId}>
+          {selectedIds.map((exId) => {
+        const exName = exerciseName(exId);
+        return (
+            <Card key={exId} data-exercise={exName}>
               <CardContent className="space-y-3">
                 <div className="flex items-center justify-between">
                   <p className="flex items-center gap-2 font-medium">
                     <Dumbbell className="size-4 text-primary" />
-                    {exerciseName(exId)}
+                    {exName}
                   </p>
                   <Button
                     variant="ghost"
@@ -310,6 +318,9 @@ export function LogForm({
                       <Input
                         type="number"
                         inputMode="numeric"
+                        data-testid="set-reps"
+                        data-exercise={exName}
+                        data-set-index={idx}
                         placeholder="–"
                         value={row.reps}
                         onChange={(e) => updateSet(exId, idx, "reps", e.target.value)}
@@ -317,6 +328,9 @@ export function LogForm({
                       <Input
                         type="number"
                         inputMode="decimal"
+                        data-testid="set-weight"
+                        data-exercise={exName}
+                        data-set-index={idx}
                         placeholder="–"
                         value={row.weight}
                         onChange={(e) => updateSet(exId, idx, "weight", e.target.value)}
@@ -336,6 +350,7 @@ export function LogForm({
                     variant="outline"
                     size="sm"
                     className="w-full"
+                    data-testid="add-set"
                     onClick={() => addSet(exId)}
                   >
                     <Plus className="size-3.5" /> Add set
@@ -343,13 +358,15 @@ export function LogForm({
                 </div>
               </CardContent>
             </Card>
-          ))}
+          );
+        })}
         </div>
       )}
 
       <Button
         className="w-full"
         size="lg"
+        data-testid="save-workout"
         onClick={save}
         disabled={pending || selectedIds.length === 0}
       >
@@ -365,7 +382,7 @@ function AddBodyPartDialog({ onAdded }: { onAdded: () => void }) {
   const [pending, start] = useTransition();
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button variant="ghost" size="sm" />}>
+      <DialogTrigger render={<Button variant="ghost" size="sm" data-testid="add-bodypart-btn" />}>
         <Plus className="size-3.5" /> Body part
       </DialogTrigger>
       <DialogContent>
@@ -374,6 +391,7 @@ function AddBodyPartDialog({ onAdded }: { onAdded: () => void }) {
         </DialogHeader>
         <Input
           autoFocus
+          data-testid="bodypart-name-input"
           placeholder="e.g. Forearms"
           value={value}
           onChange={(e) => setValue(e.target.value)}
@@ -381,6 +399,7 @@ function AddBodyPartDialog({ onAdded }: { onAdded: () => void }) {
         <DialogFooter>
           <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
           <Button
+            data-testid="bodypart-add-confirm"
             disabled={pending || !value.trim()}
             onClick={() =>
               start(async () => {
@@ -413,7 +432,7 @@ function AddExerciseDialog({
   const [pending, start] = useTransition();
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button variant="ghost" size="sm" />}>
+      <DialogTrigger render={<Button variant="ghost" size="sm" data-testid="add-exercise-btn" />}>
         <Plus className="size-3.5" /> Exercise
       </DialogTrigger>
       <DialogContent>
@@ -422,6 +441,7 @@ function AddExerciseDialog({
         </DialogHeader>
         <Input
           autoFocus
+          data-testid="exercise-name-input"
           placeholder="e.g. Cable Crossover"
           value={value}
           onChange={(e) => setValue(e.target.value)}
@@ -429,6 +449,7 @@ function AddExerciseDialog({
         <DialogFooter>
           <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
           <Button
+            data-testid="exercise-add-confirm"
             disabled={pending || !value.trim()}
             onClick={() =>
               start(async () => {

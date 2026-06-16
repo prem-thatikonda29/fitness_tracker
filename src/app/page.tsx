@@ -42,21 +42,21 @@ export default async function CalendarPage({
 
   return (
     <div className="space-y-5">
-      <header className="flex items-center justify-between">
+      <header className="flex items-center justify-between" data-testid="calendar-header">
         <h1 className="text-2xl font-bold tracking-tight">Workouts</h1>
         <UserButton />
       </header>
 
-      <Card>
+      <Card data-testid="week-summary">
         <CardContent className="space-y-2">
           <p className="text-sm text-muted-foreground">This week</p>
-          <p className="text-xl font-semibold">
+          <p className="text-xl font-semibold" data-testid="week-workout-count">
             {weekTotal} {weekTotal === 1 ? "workout" : "workouts"}
           </p>
           {weekCounts.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
               {weekCounts.map((c) => (
-                <Badge key={c.name} variant="secondary">
+                <Badge key={c.name} variant="secondary" data-testid="week-bodypart-badge" data-bodypart={c.name}>
                   {c.name} ×{c.count}
                 </Badge>
               ))}
@@ -64,6 +64,7 @@ export default async function CalendarPage({
           )}
           <Link
             href="/report"
+            data-testid="report-link"
             className="inline-flex items-center gap-1 text-sm font-medium text-primary"
           >
             Full report <ArrowRight className="size-3.5" />
@@ -72,16 +73,16 @@ export default async function CalendarPage({
       </Card>
 
       <div className="flex items-center justify-between">
-        <Button render={<Link href={`/?m=${prev}`} />} nativeButton={false} variant="ghost" size="icon">
+        <Button render={<Link href={`/?m=${prev}`} />} nativeButton={false} variant="ghost" size="icon" data-testid="month-prev">
           <ChevronLeft className="size-5" />
         </Button>
-        <h2 className="font-semibold">{format(month, "MMMM yyyy")}</h2>
-        <Button render={<Link href={`/?m=${next}`} />} nativeButton={false} variant="ghost" size="icon">
+        <h2 className="font-semibold" data-testid="month-title">{format(month, "MMMM yyyy")}</h2>
+        <Button render={<Link href={`/?m=${next}`} />} nativeButton={false} variant="ghost" size="icon" data-testid="month-next">
           <ChevronRight className="size-5" />
         </Button>
       </div>
 
-      <div className="grid grid-cols-7 gap-1.5 text-center">
+      <div className="grid grid-cols-7 gap-1.5 text-center" data-testid="calendar-grid">
         {weekdays.map((d, i) => (
           <div key={i} className="pb-1 text-xs font-medium text-muted-foreground">
             {d}
@@ -97,6 +98,8 @@ export default async function CalendarPage({
             <Link
               key={iso}
               href={href}
+              data-testid="calendar-day"
+              data-date={iso}
               className={cn(
                 "flex aspect-square items-center justify-center rounded-xl border text-sm",
                 inMonth ? "border-border" : "border-transparent text-muted-foreground/40",
@@ -112,7 +115,7 @@ export default async function CalendarPage({
         })}
       </div>
 
-      <Button render={<Link href="/log" />} nativeButton={false} className="w-full" size="lg">
+      <Button render={<Link href="/log" />} nativeButton={false} className="w-full" size="lg" data-testid="log-workout-btn">
         <Plus className="size-4" /> Log a workout
       </Button>
     </div>

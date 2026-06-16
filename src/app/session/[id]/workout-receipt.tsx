@@ -301,7 +301,7 @@ export function WorkoutReceipt(props: WorkoutReceiptProps) {
   }
 
   return (
-    <section className="space-y-3">
+    <section className="space-y-3" data-testid="workout-receipt">
       <div className="flex items-end justify-between gap-3">
         <div>
           <p className="text-sm font-medium text-muted-foreground">Visual memento</p>
@@ -312,6 +312,7 @@ export function WorkoutReceipt(props: WorkoutReceiptProps) {
 
       <div
         ref={receiptRef}
+        data-testid="receipt-visual"
         className="relative overflow-hidden rounded-3xl bg-[radial-gradient(circle_at_top_left,oklch(0.78_0.16_145),transparent_34%),linear-gradient(135deg,oklch(0.25_0.04_170),oklch(0.14_0.03_180))] p-3 shadow-xl shadow-primary/10"
       >
         <div className="absolute left-0 right-0 top-5 h-4 bg-[linear-gradient(90deg,transparent,oklch(0.96_0.03_120/.28),transparent)]" />
@@ -326,7 +327,7 @@ export function WorkoutReceipt(props: WorkoutReceiptProps) {
               </h3>
               <p className="mt-1 text-sm font-semibold text-[#64786d]">{props.dateLabel}</p>
             </div>
-            <div className="rounded-xl bg-[#ddf0c8] px-3 py-2 text-right font-mono text-xs font-bold text-[#276243]">
+            <div className="rounded-xl bg-[#ddf0c8] px-3 py-2 text-right font-mono text-xs font-bold text-[#276243]" data-testid="receipt-stats">
               <p>{props.exercises.length} EX</p>
               <p>{totalSets} SETS</p>
             </div>
@@ -340,6 +341,8 @@ export function WorkoutReceipt(props: WorkoutReceiptProps) {
                 <div
                   key={exercise.sessionExerciseId}
                   className="grid grid-cols-[1fr_auto] gap-3"
+                  data-testid="receipt-exercise-row"
+                  data-exercise={exercise.exerciseName}
                 >
                   <div>
                     <p className="font-bold leading-tight">{exercise.exerciseName}</p>
@@ -364,15 +367,16 @@ export function WorkoutReceipt(props: WorkoutReceiptProps) {
       </div>
 
       <div className="grid grid-cols-2 gap-2">
-        <Button variant="outline" onClick={downloadReceipt}>
+        <Button variant="outline" onClick={downloadReceipt} data-testid="receipt-download-btn">
           <Download className="size-4" /> Download
         </Button>
-        <Button onClick={shareReceipt}>
+        <Button onClick={shareReceipt} data-testid="receipt-share-btn">
           <Share2 className="size-4" /> Share
         </Button>
       </div>
 
       <p
+        data-testid="receipt-status"
         className={cn(
           "min-h-5 text-center text-xs font-medium text-muted-foreground transition-opacity",
           status ? "opacity-100" : "opacity-0",

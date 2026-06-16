@@ -19,7 +19,7 @@ export function DeleteSessionButton({ sessionId }: { sessionId: number }) {
   const [pending, start] = useTransition();
   return (
     <Dialog>
-      <DialogTrigger render={<Button variant="ghost" size="sm" className="text-destructive" />}>
+      <DialogTrigger render={<Button variant="ghost" size="sm" className="text-destructive" data-testid="delete-session-btn" />}>
         <Trash2 className="size-4" /> Delete
       </DialogTrigger>
       <DialogContent>
@@ -28,10 +28,11 @@ export function DeleteSessionButton({ sessionId }: { sessionId: number }) {
           <DialogDescription>This can&apos;t be undone.</DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
+          <DialogClose render={<Button variant="outline" data-testid="delete-session-cancel" />}>Cancel</DialogClose>
           <Button
             variant="destructive"
             disabled={pending}
+            data-testid="delete-session-confirm"
             onClick={() => start(() => void deleteSession(sessionId))}
           >
             Delete

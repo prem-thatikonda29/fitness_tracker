@@ -12,6 +12,7 @@ export function DeleteRoutineButton({ routineId }: { routineId: number }) {
       variant="ghost"
       size="icon"
       className="text-destructive"
+      data-testid="delete-routine-btn"
       disabled={pending}
       onClick={() => start(() => void deleteRoutine(routineId))}
     >

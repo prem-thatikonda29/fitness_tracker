@@ -33,7 +33,7 @@ export default async function SessionPage({
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <Button render={<Link href="/" />} nativeButton={false} variant="ghost" size="sm">
+        <Button render={<Link href="/" />} nativeButton={false} variant="ghost" size="sm" data-testid="back-to-calendar">
           <ChevronLeft className="size-4" /> Calendar
         </Button>
         <div className="flex items-center gap-1">
@@ -42,6 +42,7 @@ export default async function SessionPage({
             nativeButton={false}
             variant="ghost"
             size="sm"
+            data-testid="edit-session-link"
           >
             <Pencil className="size-4" /> Edit
           </Button>
@@ -50,13 +51,13 @@ export default async function SessionPage({
       </div>
 
       <header className="space-y-2">
-        <p className="text-sm text-muted-foreground">{format(day, "EEEE, d MMMM yyyy")}</p>
-        <h1 className="text-2xl font-bold tracking-tight">
+        <p className="text-sm text-muted-foreground" data-testid="session-date-label">{format(day, "EEEE, d MMMM yyyy")}</p>
+        <h1 className="text-2xl font-bold tracking-tight" data-testid="session-title">
           {session.name || "Workout"}
         </h1>
         <div className="flex flex-wrap gap-1.5">
           {bodyPartNames.map((n) => (
-            <Badge key={n}>{n}</Badge>
+            <Badge key={n} data-testid="session-bodypart-badge" data-bodypart={n}>{n}</Badge>
           ))}
         </div>
       </header>
@@ -69,11 +70,11 @@ export default async function SessionPage({
       />
 
       {exercises.length === 0 ? (
-        <p className="text-muted-foreground">No exercises logged.</p>
+        <p className="text-muted-foreground" data-testid="empty-exercises-message">No exercises logged.</p>
       ) : (
         <div className="space-y-5">
           {exercisesByBodyPart.map((group) => (
-            <section key={group.bodyPartName} className="space-y-2">
+            <section key={group.bodyPartName} className="space-y-2" data-testid="exercise-section" data-bodypart={group.bodyPartName}>
               <div className="flex items-center gap-2">
                 <h2 className="text-sm font-bold uppercase tracking-[0.18em] text-muted-foreground">
                   {group.bodyPartName}
@@ -83,7 +84,7 @@ export default async function SessionPage({
 
               <div className="space-y-3">
                 {group.exercises.map((ex) => (
-                  <Card key={ex.sessionExerciseId}>
+                  <Card key={ex.sessionExerciseId} data-testid="exercise-card" data-exercise={ex.exerciseName}>
                     <CardContent className="space-y-2">
                       <p className="flex items-center gap-2 font-medium">
                         <Dumbbell className="size-4 text-primary" />
@@ -97,6 +98,8 @@ export default async function SessionPage({
                             <div
                               key={s.id}
                               className="flex items-center gap-3 text-sm tabular-nums"
+                              data-testid="set-row"
+                              data-set-number={s.setNumber}
                             >
                               <span className="w-10 text-muted-foreground">
                                 Set {s.setNumber}
