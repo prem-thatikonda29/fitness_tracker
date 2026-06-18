@@ -69,8 +69,12 @@ public class RoutinesPage {
 
     public void toggleExercise(String exerciseName) {
         By locator = By.cssSelector("[data-testid=\"routine-exercise-toggle\"][data-exercise=\"" + exerciseName + "\"]");
+        // Wait for at least one exercise toggle to be present (exercises load async after page render)
+        wait.until(ExpectedConditions.presenceOfElementLocated(
+                By.cssSelector("[data-testid=\"routine-exercise-toggle\"]")));
         WebElement el = wait.until(ExpectedConditions.elementToBeClickable(locator));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", el);
+        try { Thread.sleep(200); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
         el.click();
     }
 
