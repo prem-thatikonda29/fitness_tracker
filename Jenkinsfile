@@ -78,14 +78,6 @@ pipeline {
             }
             post {
                 always {
-                    publishHTML([
-                        allowMissing: true,
-                        alwaysLinkToLastBuild: true,
-                        keepAll: true,
-                        reportDir: 'selenium-tests/target/surefire-reports',
-                        reportFiles: 'index.html',
-                        reportName: 'Selenium Test Report'
-                    ])
                     junit allowEmptyResults: true, testResults: 'selenium-tests/target/surefire-reports/**/*.xml'
                 }
             }
