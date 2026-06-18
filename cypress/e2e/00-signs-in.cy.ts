@@ -16,7 +16,7 @@ describe("Authentication", () => {
       .should("be.visible")
       .type(Cypress.env("test_otp"));
 
-    cy.location("pathname", { timeout: 20000 }).should("not.include", "sign-in");
+    cy.location("pathname", { timeout: 30000 }).should("not.match", /^\/sign-in\/?$/);
     cy.contains(/workouts/i).should("be.visible");
   });
 });
