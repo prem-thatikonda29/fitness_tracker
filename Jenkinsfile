@@ -4,9 +4,6 @@ pipeline {
     environment {
         BASE_URL = 'http://localhost:3000'
         PATH = "/Users/premthatikonda/.nvm/versions/node/v25.2.1/bin:/opt/homebrew/bin:/usr/bin:/bin"
-        DATABASE_URL = "${DATABASE_URL}"
-        NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY = "${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}"
-        CLERK_SECRET_KEY = "${CLERK_SECRET_KEY}"
     }
 
     stages {
@@ -24,6 +21,15 @@ pipeline {
 
         stage('Start Dev Server') {
             steps {
+                sh '''
+                    cat > .env.local <<EOF
+DATABASE_URL=${DATABASE_URL}
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+CLERK_SECRET_KEY=${CLERK_SECRET_KEY}
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+EOF
+                '''
                 sh 'npm run dev > /tmp/nextdev.log 2>&1 &'
                 sh '''
                     for i in $(seq 1 60); do
