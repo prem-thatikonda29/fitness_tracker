@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Failed suite [Fitness Tracker E2E Suite]" guice-stage="DEVELOPMENT" verbose="0">
+  <parameter name="baseUrl" value="http://localhost:3000"/>
+  <test thread-count="5" name="Authentication Tests(failed)" verbose="0">
+    <classes>
+      <class name="com.fittracker.tests.SignInTest">
+        <methods>
+          <include name="teardownDriver"/>
+          <include name="setupDriver"/>
+          <include name="testInvalidPasswordRejected"/>
+          <include name="testSuccessfulSignIn"/>
+        </methods>
+      </class> <!-- com.fittracker.tests.SignInTest -->
+    </classes>
+  </test> <!-- Authentication Tests(failed) -->
+  <test thread-count="5" name="Calendar Tests(failed)" verbose="0">
+    <classes>
+      <class name="com.fittracker.tests.CalendarTest">
+        <methods>
+          <include name="teardownDriver"/>
+          <include name="setupDriver"/>
+          <include name="testCalendarDisplaysAfterLogin"/>
+        </methods>
+      </class> <!-- com.fittracker.tests.CalendarTest -->
+    </classes>
+  </test> <!-- Calendar Tests(failed) -->
+  <test thread-count="5" name="Body Part &amp; Exercise Tests(failed)" verbose="0">
+    <classes>
+      <class name="com.fittracker.tests.AddBodyPartAndExerciseTest">
+        <methods>
+          <include name="teardownDriver"/>
+          <include name="setupDriver"/>
+          <include name="testAddBodyPartAndExercise"/>
+        </methods>
+      </class> <!-- com.fittracker.tests.AddBodyPartAndExerciseTest -->
+    </classes>
+  </test> <!-- Body Part & Exercise Tests(failed) -->
+  <test thread-count="5" name="Workout Tests(failed)" verbose="0">
+    <classes>
+      <class name="com.fittracker.tests.LogWorkoutTest">
+        <methods>
+          <include name="teardownDriver"/>
+          <include name="setupDriver"/>
+          <include name="testLogFullWorkout"/>
+        </methods>
+      </class> <!-- com.fittracker.tests.LogWorkoutTest -->
+      <class name="com.fittracker.tests.EditWorkoutTest">
+        <methods>
+          <include name="teardownDriver"/>
+          <include name="testEditWorkoutName"/>
+          <include name="setupDriver"/>
+        </methods>
+      </class> <!-- com.fittracker.tests.EditWorkoutTest -->
+    </classes>
+  </test> <!-- Workout Tests(failed) -->
+  <test thread-count="5" name="Routine Tests(failed)" verbose="0">
+    <classes>
+      <class name="com.fittracker.tests.CreateRoutineTest">
+        <methods>
+          <include name="teardownDriver"/>
+          <include name="setupDriver"/>
+          <include name="testCreateRoutine"/>
+        </methods>
+      </class> <!-- com.fittracker.tests.CreateRoutineTest -->
+    </classes>
+  </test> <!-- Routine Tests(failed) -->
+</suite> <!-- Failed suite [Fitness Tracker E2E Suite] -->

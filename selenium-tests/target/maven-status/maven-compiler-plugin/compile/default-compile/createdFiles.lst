@@ -1,0 +1,7 @@
+com/fittracker/pages/RoutinesPage.class
+com/fittracker/pages/SignInPage.class
+com/fittracker/config/TestConfig.class
+com/fittracker/pages/SessionPage.class
+com/fittracker/pages/LogWorkoutPage.class
+com/fittracker/pages/CalendarPage.class
+com/fittracker/config/WebDriverFactory.class

@@ -1,0 +1,7 @@
+com/fittracker/BaseTest.class
+com/fittracker/tests/CalendarTest.class
+com/fittracker/tests/SignInTest.class
+com/fittracker/tests/LogWorkoutTest.class
+com/fittracker/tests/CreateRoutineTest.class
+com/fittracker/tests/EditWorkoutTest.class
+com/fittracker/tests/AddBodyPartAndExerciseTest.class
