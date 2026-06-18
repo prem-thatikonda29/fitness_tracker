@@ -13,6 +13,19 @@ pipeline {
             }
         }
 
+        stage('Setup Environment') {
+            steps {
+                sh '''
+                    printf 'DATABASE_URL=%s\n' "$DATABASE_URL" > .env.local
+                    printf 'NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=%s\n' "$NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY" >> .env.local
+                    printf 'CLERK_SECRET_KEY=%s\n' "$CLERK_SECRET_KEY" >> .env.local
+                    printf 'NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in\n' >> .env.local
+                    printf 'NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up\n' >> .env.local
+                '''
+                sh 'echo "=== .env.local key names ===" && grep -o "^[^=]*" .env.local'
+            }
+        }
+
         stage('Build App') {
             steps {
                 sh 'npm run build'
@@ -21,15 +34,6 @@ pipeline {
 
         stage('Start Dev Server') {
             steps {
-                sh '''
-                    cat > .env.local <<EOF
-DATABASE_URL=${DATABASE_URL}
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
-CLERK_SECRET_KEY=${CLERK_SECRET_KEY}
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-EOF
-                '''
                 sh 'npm run dev > /tmp/nextdev.log 2>&1 &'
                 sh '''
                     for i in $(seq 1 60); do
