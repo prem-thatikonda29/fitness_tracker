@@ -3,8 +3,10 @@ pipeline {
 
     environment {
         BASE_URL = 'http://localhost:3000'
-        // nvm is not in Jenkins PATH — hardcode Node.js binary path
         PATH = "/Users/premthatikonda/.nvm/versions/node/v25.2.1/bin:/opt/homebrew/bin:/usr/bin:/bin"
+        DATABASE_URL = credentials('DATABASE_URL')
+        NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY = credentials('NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY')
+        CLERK_SECRET_KEY = credentials('CLERK_SECRET_KEY')
     }
 
     stages {
