@@ -41,9 +41,21 @@ yarn-error.log*
 next-env.d.ts
 
 # Cypress
-cypress/videos/
-cypress/screenshots/
-cypress/downloads/
+testing/cypress/videos/
+testing/cypress/screenshots/
+testing/cypress/downloads/
 cypress.env.json
 
+# Selenium
+testing/selenium-tests/target/
+
+# JMeter
+testing/jmeter.log
+testing/cookies.txt
+testing/recording.xml
+
+# QA Report
+QA-REPORT.md
+
+# Tool artifacts
 .commandcode

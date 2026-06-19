@@ -59,14 +59,14 @@ pipeline {
             }
             post {
                 always {
-                    archiveArtifacts artifacts: 'cypress/screenshots/**/*, cypress/videos/**/*', allowEmptyArchive: true
+                    archiveArtifacts artifacts: 'testing/cypress/screenshots/**/*, testing/cypress/videos/**/*', allowEmptyArchive: true
                 }
             }
         }
 
         stage('Selenium Tests') {
             steps {
-                dir('selenium-tests') {
+                dir('testing/selenium-tests') {
                     sh """
                         mvn clean test \
                             -Dtest.email=${TEST_EMAIL} \
@@ -78,7 +78,16 @@ pipeline {
             }
             post {
                 always {
-                    junit allowEmptyResults: true, testResults: 'selenium-tests/target/surefire-reports/**/*.xml'
+                    junit allowEmptyResults: true, testResults: 'testing/selenium-tests/target/surefire-reports/**/*.xml'
+                    publishHTML(target: [
+                        reportDir: 'testing/selenium-tests/target/surefire-reports',
+                        reportFiles: 'emailable-report.html',
+                        reportName: 'TestNG Report',
+                        keepAll: true,
+                        alwaysLinkToLastBuild: true,
+                        allowMissing: true
+                    ])
+                    archiveArtifacts artifacts: 'testing/selenium-tests/target/surefire-reports/**/*', allowEmptyArchive: true
                 }
             }
         }
