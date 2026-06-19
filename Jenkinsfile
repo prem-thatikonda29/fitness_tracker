@@ -82,7 +82,7 @@ pipeline {
                     publishHTML(target: [
                         reportDir: 'testing/selenium-tests/target/surefire-reports',
                         reportFiles: 'emailable-report.html',
-                        reportName: 'TestNG Report',
+                        reportName: 'TestNG-Report',
                         keepAll: true,
                         alwaysLinkToLastBuild: true,
                         allowMissing: true

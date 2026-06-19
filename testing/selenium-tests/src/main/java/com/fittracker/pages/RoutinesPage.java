@@ -59,17 +59,21 @@ public class RoutinesPage {
                 .ifPresent(el -> {
                     wait.until(ExpectedConditions.elementToBeClickable(el)).click();
                 });
-        // Wait for the select popup overlay to fully close
+        // Wait for the select popup overlay (data-base-ui-inert) to fully close
         try {
-            Thread.sleep(1000);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(
+                By.cssSelector("[data-base-ui-inert]")));
     }
 
     public void toggleExercise(String exerciseName) {
         By locator = By.cssSelector("[data-testid=\"routine-exercise-toggle\"][data-exercise=\"" + exerciseName + "\"]");
-        // Wait for at least one exercise toggle to be present (exercises load async after page render)
+        // Wait for overlay to be gone and exercise toggles to be present
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(
+                By.cssSelector("[data-base-ui-inert]")));
         wait.until(ExpectedConditions.presenceOfElementLocated(
                 By.cssSelector("[data-testid=\"routine-exercise-toggle\"]")));
         WebElement el = wait.until(ExpectedConditions.elementToBeClickable(locator));

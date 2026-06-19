@@ -5,6 +5,9 @@ export default defineConfig({
     baseUrl: "http://localhost:3000",
     specPattern: "testing/cypress/e2e/**/*.cy.ts",
     supportFile: "testing/cypress/support/e2e.ts",
+    screenshotsFolder: "testing/cypress/screenshots",
+    videosFolder: "testing/cypress/videos",
+    downloadsFolder: "testing/cypress/downloads",
     // Clerk's first paint + client-side hydration can be slow on cold dev.
     defaultCommandTimeout: 15000,
     pageLoadTimeout: 60000,
