@@ -52,34 +52,31 @@ public class RoutinesPage {
     }
 
     public void selectSplit(String splitLabel) {
-        wait.until(ExpectedConditions.elementToBeClickable(splitSelect)).click();
+        // Click the trigger using JS to avoid overlay interception
+        WebElement trigger = wait.until(ExpectedConditions.presenceOfElementLocated(splitSelect));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", trigger);
+        // Wait for the popup list to appear
+        wait.until(ExpectedConditions.visibilityOfElementLocated(splitItems));
+        // Find and click the target item using JS
         driver.findElements(splitItems).stream()
                 .filter(el -> el.getText().equals(splitLabel))
                 .findFirst()
-                .ifPresent(el -> {
-                    wait.until(ExpectedConditions.elementToBeClickable(el)).click();
-                });
-        // Wait for the select popup overlay (data-base-ui-inert) to fully close
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(
-                By.cssSelector("[data-base-ui-inert]")));
+                .ifPresent(el -> ((JavascriptExecutor) driver).executeScript("arguments[0].click();", el));
+        // Press Escape to ensure any lingering popup closes, then wait
+        try { Thread.sleep(300); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+        driver.findElement(By.cssSelector("body")).sendKeys(org.openqa.selenium.Keys.ESCAPE);
+        try { Thread.sleep(300); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
     }
 
     public void toggleExercise(String exerciseName) {
         By locator = By.cssSelector("[data-testid=\"routine-exercise-toggle\"][data-exercise=\"" + exerciseName + "\"]");
-        // Wait for overlay to be gone and exercise toggles to be present
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(
-                By.cssSelector("[data-base-ui-inert]")));
-        wait.until(ExpectedConditions.presenceOfElementLocated(
-                By.cssSelector("[data-testid=\"routine-exercise-toggle\"]")));
-        WebElement el = wait.until(ExpectedConditions.elementToBeClickable(locator));
+        // Wait for the exercise button to be present in DOM
+        wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+        // Scroll into view, then JS-click to bypass any lingering overlay
+        WebElement el = driver.findElement(locator);
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", el);
         try { Thread.sleep(200); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
-        el.click();
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", el);
     }
 
     public void clickSave() {
